@@ -80,12 +80,12 @@
             }
             function updateSlotsView(data) {
                 slotsContainer.innerHTML = '';
+				console.log("ciao")
                 // Aggiungiamo lo Slot5 vuoto, perché il JSON potrebbe non contenerlo
                 const allSlotsData = [...data.slots];
-                if (!allSlotsData.find(s => s.slotName === 'Slot5')) {
-                    allSlotsData.push({ slotName: 'Slot5', product: null });
-                }
- 
+				for(let i = 1; i <= 5; i++)
+                	if (!allSlotsData.find(s => s.slotName === 'Slot'+i))
+                    	allSlotsData.push({ slotName: 'Slot'+i, product: {name: "?", productId: "?", weight: "?"} });
                 allSlotsData.sort((a, b) => a.slotName.localeCompare(b.slotName));
                 allSlotsData.forEach(slot => {
                     const slotDiv = document.createElement('div');
