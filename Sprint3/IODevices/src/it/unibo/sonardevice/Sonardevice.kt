@@ -31,15 +31,22 @@ class Sonardevice ( name: String, scope: CoroutineScope, isconfined: Boolean=fal
 		//IF actor.withobj !== null val actor.withobj.name» = actor.withobj.method»ENDIF
 		 
 			lateinit var reader : java.io.BufferedReader
-		    lateinit var p : Process	
 		    var Distance = 0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						CommUtils.outblack("$name | start")
+						CommUtils.outgreen("$name | start")
 						
-									p       = Runtime.getRuntime().exec("python ./resources/python/sonar.py")
-									reader  = java.io.BufferedReader(  java.io.InputStreamReader(p.getInputStream() ))	
+							 		var p = Runtime.getRuntime().exec("python -u -")
+									this::class.java.getResourceAsStream("/python/sonar.py")!!.use {
+						   				it.copyTo(p.outputStream)
+									}
+									p.outputStream.close()
+									// Consuma l'output rimasto'
+									Thread {
+						    			p.inputStream.bufferedReader().forEachLine { println("[PY] $it") }
+									}.start()
+									reader  = java.io.BufferedReader(  java.io.InputStreamReader(p.getInputStream() ))
 						delay(2000) 
 						//genTimer( actor, state )
 					}
@@ -52,6 +59,7 @@ class Sonardevice ( name: String, scope: CoroutineScope, isconfined: Boolean=fal
 					action { //it:State
 						 
 								var data = reader.readLine()
+								System.out.println(data)
 								if( data != null ){
 								try{ 
 									val vd = data.toFloat()
@@ -64,6 +72,7 @@ class Sonardevice ( name: String, scope: CoroutineScope, isconfined: Boolean=fal
 								}
 								}//if
 								
+						CommUtils.outmagenta("$data")
 						if(  Distance > 0  
 						 ){CommUtils.outyellow("$name with python: data = $data")
 						emitLocalStreamEvent("sonardata", "distance($Distance)" ) 
