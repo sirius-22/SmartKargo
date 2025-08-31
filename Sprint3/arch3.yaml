@@ -157,7 +157,7 @@ services:
 
   cargoservicestatusgui_model:
      container_name: cargoservicestatusgui_model
-     image: sirius0022/cargoservicestatusgui_model:1.1
+     image: sirius0022/cargoservicestatusgui_model:1.2
      mem_limit: 512m
      ports:
        - "8080:8080" 
