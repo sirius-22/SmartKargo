@@ -108,7 +108,7 @@ services:
   # ------ CARGOSERVICECORE -------------
   cargoservicecore:
     container_name: cargoservicecore
-    image: sirius0022/cargoservice:2.0 
+    image: sirius0022/cargoservice:2.1 
     mem_limit: 512m
     ports:
       - "8000:8000/tcp"
