@@ -21,6 +21,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private static final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     private final ClientCaller ClientCaller;
+    private static String lastUpdateCache = "{ \"slots\": [" +
+            "{\"slotName\":\"Slot1\",\"product\":null}," +
+            "{\"slotName\":\"Slot2\",\"product\":null}," +
+            "{\"slotName\":\"Slot3\",\"product\":null}," +
+            "{\"slotName\":\"Slot4\",\"product\":null}" +
+            "]}";
     
     // Singleton instance
     private static WebSocketHandler singleton;
@@ -38,6 +44,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
         CommUtils.outgreen("WebSocketHandler | New connection established: " + session.getId() + ". Total sessions: " + sessions.size());
+        reply(session.getId(), lastUpdateCache);
     }
 
     @Override
@@ -68,6 +75,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * @param message Il messaggio (JSON dello stato della stiva) da inviare.
      */
     public void sendToAll(String message) {
+    	lastUpdateCache = message;
         TextMessage textMessage = new TextMessage(message);
         CommUtils.outyellow("JSON WS | "+textMessage);
         for (WebSocketSession session : sessions) {
